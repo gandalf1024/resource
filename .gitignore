@@ -1,0 +1,7 @@
+*.git
+vendor
+/.idea
+*.log
+workspace
+*.exe
+log
