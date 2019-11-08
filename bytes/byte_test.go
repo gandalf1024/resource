@@ -1,4 +1,4 @@
-package d_02
+package bytes
 
 import (
 	"bytes"
