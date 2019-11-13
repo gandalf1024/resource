@@ -7,68 +7,13 @@ import (
 	"testing"
 )
 
-type S struct {
-	data string
-}
-
-func (str *S) WriteString(s string) (n int, err error) {
-	str.data += s
-	return len(s) * 10, nil
-}
-
-func (str *S) Write(p []byte) (n int, err error) {
-	str.data += string(p)
-	return len(p) * 5, nil
-}
-
 func Test_StringWriter(t *testing.T) {
-	str := &S{}
-	n, err := io.WriteString(str, "你hi撒旦广泛的事故发生的")
+	w := &W{}
+	n, err := io.WriteString(w, "你hi撒旦广泛的事故发生的")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(n)
-}
-
-type R struct {
-	bys []byte
-}
-
-func (r *R) Read(p []byte) (n int, err error) {
-	if r.bys == nil {
-		return 0, io.EOF
-	}
-	copy(p, r.bys)
-	r.bys = nil
-	return len(p), nil
-}
-
-func (r *R) WriteTo(w io.Writer) (n int64, err error) {
-	ncount, err := w.Write(r.bys)
-	return int64(ncount), err
-}
-
-func (r *R) ReadAt(p []byte, off int64) (n int, err error) {
-	if r.bys == nil {
-		return 0, io.EOF
-	}
-	copy(p, r.bys[off:])
-	r.bys = nil
-	return len(p), nil
-}
-
-type W struct {
-	bys []byte
-}
-
-func (w *W) Write(p []byte) (n int, err error) {
-	w.bys = append(w.bys, p...)
-	return len(p), nil
-}
-
-func (w *W) ReadFrom(r io.Reader) (n int64, err error) {
-	rn, err := r.Read(w.bys)
-	return int64(rn), err
 }
 
 func Test_ReadAtLeast(t *testing.T) {
@@ -203,10 +148,11 @@ func Test_LimitReader(t *testing.T) {
 
 }
 
-func Test_ReaderAt(t *testing.T) {
+func Test_NewSectionReader_Read(t *testing.T) {
 	r := &R{}
+	r.bys = []byte("123456789101112")
 	var ra io.ReaderAt = r
-	sectionReader := io.NewSectionReader(ra, 1, 1)
+	sectionReader := io.NewSectionReader(ra, 2, 3) //从索引地址 2 开始  读取3个
 
 	bys := make([]byte, 100)
 	n, err := sectionReader.Read(bys)
@@ -216,4 +162,58 @@ func Test_ReaderAt(t *testing.T) {
 
 	fmt.Println(n)
 	fmt.Println(string(bys))
+}
+
+func Test_NewSectionReader_Seek(t *testing.T) {
+	r := &R{}
+	r.bys = []byte("123456789101112")
+	var ra io.ReaderAt = r
+	sectionReader := io.NewSectionReader(ra, 2, 3) //从索引地址 2 开始  读取3个
+
+	n, err := sectionReader.Seek(2, 2) // 移动开始点
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(n)
+}
+
+func Test_NewSectionReader_ReadAt(t *testing.T) {
+	r := &R{}
+	r.bys = []byte("123456789101112435678698657896789")
+	var ra io.ReaderAt = r
+	sectionReader := io.NewSectionReader(ra, 1, 5) //从索引地址 1 开始  读取2个
+
+	bys := make([]byte, 100)
+	n, err := sectionReader.ReadAt(bys, 3)
+	if err != nil && err != io.EOF {
+		panic(err)
+	}
+
+	fmt.Println(n)
+}
+
+func Test_NewSectionReader_Size(t *testing.T) {
+	r := &R{}
+	r.bys = []byte("123456789101112435678698657896789")
+	sectionReader := io.NewSectionReader(r, 3, 8) // size的值和n永远一致
+	size := sectionReader.Size()
+	fmt.Println(size)
+}
+
+func Test_TeeReader(t *testing.T) {
+	r := &R{}
+	w := &W{}
+
+	r.bys = []byte("123456789")
+
+	reader := io.TeeReader(r, w)
+	bys := make([]byte, 100)
+	n, err := reader.Read(bys)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(n)
+	fmt.Println(string(r.bys))
+	fmt.Println(string(w.bys))
 }
