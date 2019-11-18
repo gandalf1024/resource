@@ -1,7 +1,6 @@
 package io
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -39,7 +38,7 @@ func Test_Pipe2(t *testing.T) {
 		index := 0
 		for index < 100000 {
 			bys := make([]byte, 100)
-			n, _ := pr.Read(bys)
+			n, _ := pr.Read(bys[10:])
 			fmt.Println(n)
 			fmt.Println(string(bys))
 			index++
@@ -53,7 +52,7 @@ func Test_Pipe2(t *testing.T) {
 			n, _ := pw.Write([]byte("123456:" + strconv.Itoa(index)))
 			fmt.Println(n)
 			index++
-			_ = pw.CloseWithError(errors.New("自定义"))
+			//_ = pw.CloseWithError(errors.New("自定义"))
 		}
 		wg.Done()
 	}()

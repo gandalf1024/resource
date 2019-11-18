@@ -10,7 +10,7 @@ import (
 
 func Test_StringWriter(t *testing.T) {
 	w := &W{}
-	n, err := io.WriteString(w, "你hi撒旦广泛的事故发生的")
+	n, err := io.WriteString(w, "小猪佩奇是社会姐")
 	if err != nil {
 		panic(err)
 	}

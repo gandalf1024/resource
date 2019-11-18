@@ -3,6 +3,7 @@ package bytes
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -76,4 +77,50 @@ func Test_NewBuffer_Demo(t *testing.T) {
 	line = append(line, 11)
 	fmt.Println(line)
 
+}
+
+type R struct {
+	bys []byte
+}
+
+func (r *R) Read(p []byte) (n int, err error) {
+	if r.bys == nil {
+		return 0, io.EOF
+	}
+
+	index := 0
+	for i, v := range p {
+		if v == 0 {
+			index = i
+			break
+		}
+	}
+
+	copy(p[index:], r.bys)
+	return len(r.bys), io.EOF
+}
+
+func Test_ReadFrom(t *testing.T) {
+	r := &R{}
+	r.bys = []byte("99999")
+
+	bf := bytes.NewBuffer([]byte("111111111"))
+	n, err := bf.ReadFrom(r)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(n)
+}
+
+func Test_ReadFrom_file(t *testing.T) {
+	f, err := os.Open("./data/aa.txt")
+	if err != nil {
+		panic(err)
+	}
+	bf := bytes.NewBuffer([]byte("123456789"))
+	n, err := bf.ReadFrom(f)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(n)
 }
