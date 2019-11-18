@@ -6,6 +6,35 @@ import (
 	"testing"
 )
 
+var compareTests = []struct {
+	a, b []byte
+	i    int
+}{
+	{[]byte(""), []byte(""), 0},
+	{[]byte("a"), []byte(""), 1},
+	{[]byte(""), []byte("a"), -1},
+	{[]byte("abc"), []byte("abc"), 0},
+	{[]byte("abd"), []byte("abc"), 1},
+	{[]byte("abc"), []byte("abd"), -1},
+	{[]byte("ab"), []byte("abc"), -1},
+	{[]byte("abc"), []byte("ab"), 1},
+	{[]byte("x"), []byte("ab"), 1},
+	{[]byte("ab"), []byte("x"), -1},
+	{[]byte("x"), []byte("a"), 1},
+	{[]byte("b"), []byte("x"), -1},
+	// test runtime·memeq's chunked implementation
+	{[]byte("abcdefgh"), []byte("abcdefgh"), 0},
+	{[]byte("abcdefghi"), []byte("abcdefghi"), 0},
+	{[]byte("abcdefghi"), []byte("abcdefghj"), -1},
+	{[]byte("abcdefghj"), []byte("abcdefghi"), 1},
+	// nil tests
+	{nil, nil, 0},
+	{[]byte(""), nil, 0},
+	{nil, []byte(""), 0},
+	{[]byte("a"), nil, 1},
+	{nil, []byte("a"), -1},
+}
+
 func Test_Equal(t *testing.T) {
 	by1 := make([]byte, 0)
 	by1 = append(by1, 10)
@@ -14,6 +43,23 @@ func Test_Equal(t *testing.T) {
 
 	flag := bytes.Equal(by1, by2) //先转换为string然后判断字符串是否相等     （原理string的底层是byte数组）
 	fmt.Println(flag)
+}
+
+func Test_Equal_Off(t *testing.T) {
+
+	allocs := testing.AllocsPerRun(10, func() { // 调用10次
+		for _, tt := range compareTests {
+			eql := bytes.Equal(tt.a, tt.b)
+			if eql != (tt.i == 0) {
+				t.Errorf(`Equal(%q, %q) = %v`, tt.a, tt.b, eql)
+			}
+		}
+	})
+
+	if allocs > 0 {
+		t.Errorf("Equal allocated %v times", allocs)
+	}
+
 }
 
 func Test_Compare(t *testing.T) {

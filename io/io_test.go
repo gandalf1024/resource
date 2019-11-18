@@ -1,6 +1,7 @@
 package io
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -99,6 +100,23 @@ func Test_Copy(t *testing.T) {
 	fmt.Println(wn)
 	fmt.Println(string(w.bys))
 	fmt.Println(string(r.bys))
+}
+
+func Test_Copy_Off(t *testing.T) {
+	type Buffer struct {
+		bytes.Buffer
+		io.ReaderFrom
+		io.WriterTo
+	}
+
+	rb := new(Buffer)
+	wb := new(Buffer)
+	rb.WriteString("hello, world.")
+	io.Copy(wb, rb)
+	if wb.String() != "hello, world." {
+		t.Errorf("Copy did not work properly")
+	}
+
 }
 
 func Test_CopyBuffer(t *testing.T) {
