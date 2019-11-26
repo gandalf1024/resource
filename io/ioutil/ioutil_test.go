@@ -42,6 +42,8 @@ func Test_KK(t *testing.T) {
 	fmt.Println(^uint(0))      // uint最大值
 }
 
+var 你好 = "dsddd"
+
 func Test_ReadFile(t *testing.T) {
 	fileBys, err := ioutil.ReadFile("./data/data.txt")
 	if err != nil {
