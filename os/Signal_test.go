@@ -2,9 +2,7 @@ package os
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"os/exec"
 	"os/signal"
 	"testing"
 )
@@ -24,12 +22,4 @@ func Test_Stop(t *testing.T) {
 	s := <-c
 	fmt.Println("Got signal:", s)
 
-}
-
-func Test_LookPath(t *testing.T) {
-	path, err := exec.LookPath("./data/data.txt")
-	if err != nil {
-		log.Fatal("installing fortune is in your future")
-	}
-	fmt.Printf("fortune is available at %s\n", path)
 }

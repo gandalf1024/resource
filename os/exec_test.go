@@ -2,13 +2,15 @@ package os
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 	"testing"
 )
 
 func Test_exec(t *testing.T) {
 	// 启动一个wait 程序   ps aux | grep main 获取pid
-	pro, err := os.FindProcess(49042)
+	pro, err := os.FindProcess(49042) // 循环调用在linux下会出现问题但是不会死机
 	if err != nil {
 		panic(err)
 	}
@@ -37,4 +39,25 @@ func Test_StartProcess(t *testing.T) {
 	}
 	fmt.Println(process)
 
+}
+
+func Test_Command(t *testing.T) {
+	cmd := exec.Command("shutdown", "-h", "now") // 对应不同平台命令
+	err := cmd.Run()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Test_String(t *testing.T) {
+	cmd := exec.Command("shutdown", "-h", "now") // 对应不同平台命令
+	fmt.Println(cmd.String())
+}
+
+func Test_LookPath(t *testing.T) {
+	path, err := exec.LookPath("./data/data.txt")
+	if err != nil {
+		log.Fatal("installing fortune is in your future")
+	}
+	fmt.Printf("fortune is available at %s\n", path)
 }

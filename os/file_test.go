@@ -160,20 +160,6 @@ func Test_Mkdir(t *testing.T) {
 	}
 }
 
-func Test_MkdirAll(t *testing.T) {
-	err := os.MkdirAll("./data3/2/3/4", os.ModePerm)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func Test_RemoveAll(t *testing.T) {
-	err := os.RemoveAll("./data2")
-	if err != nil {
-		panic(err)
-	}
-}
-
 func Test_Rename(t *testing.T) {
 	err := os.Rename("./data3", "./data5")
 	if err != nil {
@@ -294,11 +280,6 @@ func Test_Hostname(t *testing.T) {
 	fmt.Println(name)
 }
 
-func Test_Getpagesize(t *testing.T) {
-	pageSize := os.Getpagesize()
-	fmt.Println(pageSize)
-}
-
 func Test_Environ(t *testing.T) {
 	envs := os.Environ()
 	for _, v := range envs {
@@ -327,24 +308,4 @@ func Test_Expand(t *testing.T) {
 func Test_ExpandEnv(t *testing.T) {
 	result := os.ExpandEnv("ccc${var}")
 	fmt.Println(result)
-}
-
-func Test_Getuid(t *testing.T) {
-	uid := os.Geteuid()
-	fmt.Println(uid)
-}
-
-func Test_Geteuid(t *testing.T) {
-	euid := os.Geteuid()
-	fmt.Println(euid)
-}
-
-func Test_Getgid(t *testing.T) {
-	gid := os.Getgid()
-	fmt.Println(gid)
-}
-
-func Test_Getpid(t *testing.T) {
-	pid := os.Getpid()
-	fmt.Println(pid)
 }
