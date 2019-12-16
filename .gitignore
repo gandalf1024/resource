@@ -3,5 +3,4 @@ vendor
 /.idea
 workspace
 *.exe
-log
 temp
