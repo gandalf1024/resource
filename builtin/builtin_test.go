@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/big"
 	"testing"
+	"unsafe"
 )
 
 //默认值
@@ -70,26 +71,27 @@ func Test_f2(t *testing.T) {
 	var n rune = -2147483648 //rune = int32
 	var nn rune = 2147483647 //rune = int32
 
-	fmt.Println(a)
-	fmt.Println(aa)
-	fmt.Println(b)
-	fmt.Println(bb)
-	fmt.Println(c)
-	fmt.Println(cc)
-	fmt.Println(d)
-	fmt.Println(dd)
-	fmt.Println(e)
-	fmt.Println(ee)
-	fmt.Println(f)
-	fmt.Println(g)
-	fmt.Println(h)
-	fmt.Println(i)
-	fmt.Println(j)
-	fmt.Println(k)
-	fmt.Println(l)
-	fmt.Println(m)
-	fmt.Println(n)
-	fmt.Println(nn)
+	fmt.Println("1字节等于8位(0000 0000)")
+	fmt.Println(a, "==bool==", unsafe.Sizeof(a))
+	fmt.Println(a, "==bool==", unsafe.Sizeof(aa))
+	fmt.Println(b, "==int8==", unsafe.Sizeof(b))
+	fmt.Println(bb, "==int8==", unsafe.Sizeof(bb))
+	fmt.Println(c, "==int16==", unsafe.Sizeof(c))
+	fmt.Println(cc, "==int16==", unsafe.Sizeof(cc))
+	fmt.Println(d, "==int32==", unsafe.Sizeof(d))
+	fmt.Println(dd, "==int32==", unsafe.Sizeof(dd))
+	fmt.Println(e, "==int64==", unsafe.Sizeof(e))
+	fmt.Println(ee, "==int64==", unsafe.Sizeof(ee))
+	fmt.Println(f, "==uint8==", unsafe.Sizeof(f))
+	fmt.Println(g, "==uint16==", unsafe.Sizeof(g))
+	fmt.Println(h, "==uint32==", unsafe.Sizeof(h))
+	fmt.Println(i, "==uint64==", unsafe.Sizeof(i))
+	fmt.Println(j, "==uintptr==", unsafe.Sizeof(j))
+	fmt.Println(k, "==complex64==", unsafe.Sizeof(k))
+	fmt.Println(l, "==complex128==", unsafe.Sizeof(l))
+	fmt.Println(m, "==byte==", unsafe.Sizeof(m))
+	fmt.Println(n, "==rune==", unsafe.Sizeof(n))
+	fmt.Println(nn, "==rune==", unsafe.Sizeof(nn))
 }
 
 //计算范围
