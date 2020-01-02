@@ -3,6 +3,7 @@ package slice
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func Test_slice(t *testing.T) {
@@ -38,4 +39,70 @@ func Test_slice3(t *testing.T) {
 	fmt.Println("cap(pollorder) = ", cap(pollorder))
 	fmt.Println("len(lockorder) = ", len(lockorder))
 	fmt.Println("cap(lockorder) = ", cap(lockorder))
+
+	// Tips:
+	// 使用append()向切片追加元素时有可能触发扩容，扩容后将会生成新的切片
+}
+
+func Test_ArrayToSlice(t *testing.T) {
+	arr := [3]int64{11, 22, 33}
+	sli := arr[:1]
+
+	fmt.Println(sli)
+	fmt.Println("len:", len(sli))
+	fmt.Println("cap:", cap(sli))
+	// Tips:
+	// 切片共用数组空间
+}
+
+//测试切片扩容规则 (每个版本不一样)
+func Test_Expansion(t *testing.T) {
+	sli := make([]int, 0, 0)
+
+	capNum := 0
+
+	index := 1
+	for index < 100 {
+		sli = append(sli, 50)
+		if cap(sli) > capNum {
+			fmt.Println("index:", index)
+			fmt.Println("len:", len(sli))
+			fmt.Println("cap:", cap(sli))
+			index++
+			time.Sleep(time.Millisecond * 50)
+			capNum = cap(sli)
+			fmt.Println("---------------------------------------------->>>>>>>>>")
+		}
+	}
+
+	// Tips:
+	//如果原Slice容量小于1024，则新Slice容量将扩大为原来的2倍；
+	//如果原Slice容量大于等于1024，则新Slice容量将扩大为原来的1.25倍；
+}
+
+//测试同时添加和copy
+func Test_copy(t *testing.T) {
+	sli1 := make([]int, 0, 0)
+	sli2 := make([]int, 0, 0)
+
+	go func() {
+		time.Sleep(time.Millisecond)
+		index := 1
+		for index < 1000 {
+			sli1 = append(sli1, 50)
+			if index%2 == 0 {
+				sli2 = append(sli2, 60)
+			}
+			index++
+		}
+	}()
+
+	time.Sleep(time.Millisecond)
+	copy(sli1, sli2)
+
+	fmt.Println(sli1)
+	fmt.Println(len(sli1))
+
+	// Tips:
+	// copy不是并发安全的
 }
