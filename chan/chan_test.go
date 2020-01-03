@@ -27,7 +27,7 @@ func Test_chan2(t *testing.T) {
 		//close(ch)
 	}()
 
-	for v := range ch { // 永久阻塞  因为没有close 28 行代码
+	for v := range ch { // 永久阻塞  因为没有close 27 行代码
 		fmt.Println(v)
 	}
 
