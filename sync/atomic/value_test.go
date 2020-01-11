@@ -10,7 +10,7 @@ func Test_Load(t *testing.T) {
 	var v atomic.Value
 	v.Store(11)
 	v.Store(12) // 覆盖11
-	v.Store(13) // 覆盖13
+	v.Store(13) // 覆盖12
 
 	result := v.Load() // 获取唯一值
 	fmt.Println(result)
